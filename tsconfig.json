@@ -18,6 +18,10 @@
         "name": "next"
       }
     ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./app/types" // <-- PASTIKAN PATH INI ADA
+    ],
     "paths": {
       "@/*": ["./*"]
     }
@@ -28,7 +32,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "./app/types/custom.d.ts"
   ],
   "exclude": ["node_modules"]
 }
