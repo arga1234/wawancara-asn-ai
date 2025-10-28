@@ -1,7 +1,5 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-Add new file first : google-credentials.json in root project, content inside  must be service account json from GCP!
-
 ## Getting Started
 
 First, run the development server:
