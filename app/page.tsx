@@ -78,7 +78,7 @@ const Home: NextPage = () => {
         {showPinPrompt && (
           <div className="mt-6 p-6 border border-gray-200 rounded-lg bg-gray-50 shadow-inner">
             <h3 className="text-xl font-bold text-gray-700 mb-4">
-              Masukkan PIN Akses
+              Masukkan PIN Akses (379166)
             </h3>
             <form onSubmit={handleSubmitPin} className="space-y-4">
               <input

@@ -166,10 +166,11 @@ useEffect(() => {
             if (nextIndex >= totalQuestions) {
         
         try {
+            const pesertaInfo = typeof window !== "undefined" ?  JSON.parse(localStorage.getItem("pesertaInfo") || "{}") : null;
             const reportResponse = await fetch('/api/final-report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ results: updatedHistory }),
+                body: JSON.stringify({ results: {data: updatedHistory, pesertaInfo} }),
             });
 
             if (!reportResponse.ok) throw new Error('Failed to fetch final report.');
@@ -213,10 +214,7 @@ useEffect(() => {
     } else if (status === 'PROCESSED_WAITING') {
         continueToNextQuestion();
     } else if (status === 'DONE_REPORT') {
-        setCurrentQuestionIndex(0);
-        setResultsHistory([]);
-        setFinalReport(null);
-        setStatus('READY');
+      window.location.reload();
     }
   };
 
@@ -241,9 +239,9 @@ useEffect(() => {
     buttonColor = 'bg-green-600 hover:bg-green-700';
     mainMessage = 'Penilaian Selesai. Tekan tombol untuk melanjutkan ke pertanyaan berikutnya.';
   } else if (status === 'DONE_REPORT') {
-    buttonText = 'Selesai & Mulai Wawancara Baru';
+    buttonText = 'Wawancara Selesai';
     buttonColor = 'bg-blue-600 hover:bg-blue-700';
-    mainMessage = 'Wawancara telah selesai. Silakan tinjau laporan akhir.';
+    mainMessage = 'Silakan tinjau laporan akhir.';
   }
 
 

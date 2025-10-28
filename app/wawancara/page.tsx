@@ -46,7 +46,7 @@ export default function Home() {
       const pesertaData = pesertaDoc.data();
 
       if (pesertaData.isBegin === true) {
-        alert("Anda sudah memulai wawancara sebelumnya dan tidak bisa mengulang ❌");
+        alert("Anda sudah memulai wawancara sebelumnya dan tidak bisa mengulang");
         return;
       }
 
@@ -55,7 +55,7 @@ export default function Home() {
         isBegin: true,
       });
 
-      localStorage.setItem("pesertaInfo", JSON.stringify(pesertaData));
+      localStorage.setItem("pesertaInfo", JSON.stringify({...pesertaData, perangkat_daerah: formData.perangkatDaerah}));
 
       setIsVerified(true);
     } catch (err) {
@@ -79,7 +79,7 @@ export default function Home() {
         className="bg-white shadow p-6 rounded-lg w-full max-w-md space-y-4"
       >
         <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Data Peserta Wawancara
+          Data Peserta Wawancara <span style={{fontSize: '12px'}}>(<span style={{color: 'red'}}>Peringatan</span>: Wawancara Hanya Bisa Dilakukan Sekali setelah klik Mulai Wawancara!)</span>
         </h2>
 
         <input

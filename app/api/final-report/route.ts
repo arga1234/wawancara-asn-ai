@@ -1,5 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
+import { app } from "../../firebase";
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const ai = new GoogleGenAI({});
 
@@ -11,18 +13,19 @@ type QuestionAnswer = {
 
 export async function POST(request: Request) {
     try {
+        const db = getFirestore(app);
         const { results } = await request.json();
 
-        if (!results || !Array.isArray(results) || results.length === 0) {
+        if (!results.data || !Array.isArray(results.data) || results.data.length === 0) {
             return NextResponse.json({ error: 'Missing or invalid interview results.' }, { status: 400 });
         }
 
-        const formattedTranscript = results.map((item: QuestionAnswer) => 
+        const formattedTranscript = results.data.map((item: QuestionAnswer) => 
             `P${item.index + 1}: ${item.question}\nJawaban: ${item.answer}\n---\n`
         ).join('\n');
         
         const systemInstruction = `Anda adalah Penilai Kinerja ASN ahli yang memberikan laporan terperinci. 
-        Nilailah kandidat berdasarkan Relevansi, Komitmen Pelayanan Publik, dan Konsistensi dengan Nilai BERAKHLAK (Berorientasi Pelayanan, Akuntabel, Kompeten, Harmonis, Loyal, Adaptif, Kolaboratif).
+        Nilailah kandidat berdasarkan Relevansi dan tempat dinasnya di ${results.pesertaInfo.perangkat_daerah}, Komitmen Pelayanan Publik, dan Konsistensi dengan Nilai BERAKHLAK (Berorientasi Pelayanan, Akuntabel, Kompeten, Harmonis, Loyal, Adaptif, Kolaboratif).
         Berikan respons dalam format JSON STRICTLY dengan struktur berikut:
         - "total_score" (integer, 1-100)
         - "komentar_umum" (string, Ringkasan performa keseluruhan.)
@@ -48,6 +51,14 @@ export async function POST(request: Request) {
         
         const jsonText = response.text.trim();
         const result = JSON.parse(jsonText);
+
+        await addDoc(collection(db, "results"), {
+            nama: results.pesertaInfo.nama ?? "",
+            nomor: results.pesertaInfo.nomor ?? "",
+            perangkat_daerah:results.pesertaInfo.perangkat_daerah ?? "",
+            result: jsonText, // langsung simpan JSON parsed
+            createdAt: serverTimestamp(),
+        });
 
         return NextResponse.json({
             success: true,
